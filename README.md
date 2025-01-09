@@ -2,7 +2,7 @@
 
 # 一键运行
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/cyeinfpro/Shadowsocks-v4first/refs/heads/main/Shadowsocks-v4first.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/cyeinfpro/EasyFRP/refs/heads/main/EasyFRP.sh)
 ```
 # 功能简介：
  1. 同一脚本可用于「公网服务器 (frps)」或「内网服务器 (frpc)」配置。

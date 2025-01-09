@@ -1,26 +1,26 @@
 #!/bin/bash
 #
-# frp 一键安装配置脚本
+# EasyFRP - 一键安装配置脚本
 #
 # 功能简介：
-#   1. 同一脚本可用于「公网服务器 (frps)」或「内网服务器 (frpc)」配置。
-#   2. 公网服务器只需基础配置 ([common])，并可在脚本菜单中修改 bind_port、dashboard_port、token 等。
-#   3. 内网服务器可配置并管理多条端口转发规则 (添加/删除/查看)，也可随时修改连接到公网的 IP/域名及端口。
-#   4. 大陆服务器可设置socks5解决下载问题。
-#   5. 自动检测并安装最新版本的 frp (多架构支持)。
-#   6. 提供健康监测与自动恢复、查看日志、重启服务、自动更新、卸载等常见功能。
+#   1. 公网服务器 (frps) 仅进行 [common] 基础配置，可通过菜单修改 bind_port、dashboard_port、token 等。
+#   2. 内网服务器 (frpc) 可配置并管理端口转发规则（添加/删除/查看），并可通过菜单修改连接公网的 IP/端口。
+#   3. 解决 SOCKS5 代理下载问题，自动获取最新版本并安装。
+#   4. 提供健康监测与自动恢复、查看日志、重启服务、自动更新、卸载等功能。
 #
 # 使用方式：
-#   1) 以 root 身份运行此脚本。
-#   2) 根据提示选择服务器所在地区（「中国大陆」或「海外」），如选择中国大陆则可配置 SOCKS5 代理下载。
-#   3) 在主菜单中根据需要配置/修改 公网服务器 (frps) 或内网服务器 (frpc)。
-#   4) 若要修改公网服务器或内网服务器的配置，进入对应的菜单即可；端口转发规则的添加/删除/查看只在内网服务器侧管理。
+#   1. 保存脚本并赋予执行权限。
+#      ```bash
+#      nano easyfrp_setup.sh
+#      # 粘贴以下脚本内容
+#      chmod +x easyfrp_setup.sh
+#      ```
+#   2. 以 root 身份运行脚本。
+#      ```bash
+#      sudo ./easyfrp_setup.sh
+#      ```
 #
-# 注意：需在 Debian/Ubuntu 系列系统使用，如需适配其他发行版请自行修改。
-#
-# 发布信息：
-#   - 作者：@Liangcye
-#   - 项目地址：https://github.com/cyeinfpro/EasyFRP
+# 注意：此脚本仅支持 Debian 或 Ubuntu 系统。
 
 set -e
 
@@ -808,16 +808,20 @@ uninstall_frp() {
             ;;
         3)
             echo -e "${GREEN}正在卸载 公网服务器的 frps 和 内网服务器的 frpc...${NC}"
+            # 卸载 frps
             systemctl stop frps || true
             systemctl disable frps || true
             rm -f /etc/systemd/system/frps.service
+            # 卸载 frpc
             systemctl stop frpc || true
             systemctl disable frpc || true
             rm -f /etc/systemd/system/frpc.service
+            # 清理文件
             systemctl daemon-reload
             rm -rf "$FRP_DIR"
             rm -f /usr/local/bin/frps /usr/local/bin/frpc
             rm -f "$FRPS_CONF" "$FRPC_CONF"
+            # 清理代理配置
             if [ -f "$PROXY_CONF" ]; then
                 rm -f "$PROXY_CONF"
                 echo -e "${GREEN}已删除 SOCKS5 代理配置。${NC}"
@@ -880,7 +884,7 @@ EOF
 
     chmod +x "$HEALTH_CHECK_SCRIPT"
 
-    # 每 5 分钟执行一次
+    # 每5分钟执行一次
     (crontab -l 2>/dev/null | grep -v "$HEALTH_CHECK_SCRIPT"; echo "*/5 * * * * $HEALTH_CHECK_SCRIPT") | crontab -
 
     echo -e "${GREEN}健康监测与自动恢复设置完成。${NC}"
@@ -942,7 +946,7 @@ view_logs() {
 main_menu() {
     while true; do
         echo -e "\n=========================================="
-        echo -e "   公网服务器/内网服务器 frp 设置脚本 "
+        echo -e "   公网服务器/内网服务器 frp 设置脚本（完整版）"
         echo -e "=========================================="
         echo -e "1. 配置/修改 公网服务器（frps）"
         echo -e "2. 配置/修改 内网服务器（frpc）"
@@ -1096,6 +1100,38 @@ manage_frpc_menu() {
     done
 }
 
+# -- 管理内网服务器的端口转发规则 --
+manage_frpc_rules() {
+    while true; do
+        echo -e "\n=========================================="
+        echo -e "        内网服务器 (frpc) 端口转发规则管理        "
+        echo -e "=========================================="
+        echo -e "1. 添加端口转发规则"
+        echo -e "2. 删除端口转发规则"
+        echo -e "3. 列出所有端口转发规则"
+        echo -e "4. 返回内网服务器管理菜单"
+        read -rp "请输入选项（1-4）: " RULE_OPTION
+
+        case $RULE_OPTION in
+            1)
+                add_rule_frpc
+                ;;
+            2)
+                delete_rule_frpc
+                ;;
+            3)
+                list_rules_frpc
+                ;;
+            4)
+                break
+                ;;
+            *)
+                echo -e "${RED}无效的选项，请重新选择。${NC}"
+                ;;
+        esac
+    done
+}
+
 # (入口) 初始化脚本
 initialize() {
     echo -e "\n=========================================="
@@ -1142,4 +1178,3 @@ initialize() {
 initialize
 
 echo -e "${GREEN}frp 脚本执行完毕，可随时运行此脚本进行管理操作！${NC}"
-

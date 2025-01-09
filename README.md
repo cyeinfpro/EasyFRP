@@ -8,7 +8,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/cyeinfpro/EasyFRP/refs/heads/m
  1. 同一脚本可用于「公网服务器 (frps)」或「内网服务器 (frpc)」配置。
  2. 公网服务器只需基础配置 ([common])，并可在脚本菜单中修改 bind_port、dashboard_port、token 等。
  3. 内网服务器可配置并管理多条端口转发规则 (添加/删除/查看)，也可随时修改连接到公网的 IP/域名及端口。
- 4. 解决 wget 不支持 socks5:// 的问题，自动通过 curl --socks5 或 proxychains4 wget 下载。
+ 4. 大陆服务器可设置socks5解决下载问题。
  5. 自动检测并安装最新版本的 frp (多架构支持)。
  6. 提供健康监测与自动恢复、查看日志、重启服务、自动更新、卸载等常见功能。
 

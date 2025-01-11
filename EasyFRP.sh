@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# FRP 一键安装配置脚本
+# EasyFRP 一键安装配置脚本
 # 用法：直接执行 bash 脚本即可
 #
 
@@ -818,7 +818,7 @@ init_dirs_logs() {
 initialize() {
   check_root
   init_dirs_logs
-  echo -e "\n===== FRP 一键安装配置脚本 (精简重构版) ====="
+  echo -e "\n===== EasyFRP 一键安装配置脚本 ====="
   detect_os
   install_dependencies
   check_command "curl"

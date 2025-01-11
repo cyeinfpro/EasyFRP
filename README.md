@@ -18,4 +18,4 @@ bash <(curl -Ls https://raw.githubusercontent.com/cyeinfpro/EasyFRP/refs/heads/m
  3) 在主菜单中根据需要配置/修改 公网服务器 (frps) 或内网服务器 (frpc)。
  4) 若要修改公网服务器或内网服务器的配置，进入对应的菜单即可；端口转发规则的添加/删除/查看只在内网服务器侧管理。
 
-# 注意：需在 Debian/Ubuntu 系列系统使用，如需适配其他发行版请自行修改。
+# 注意：需在 Debian/Ubuntu/CentOS 系列系统使用，如需适配其他发行版请自行修改。
